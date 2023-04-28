@@ -38,7 +38,7 @@ class BSW:
         else:
             print("Channel {} not configured as output channel".format(channel))
     def configure_pwm(self, channel, freq=25000):
-        configure_outputchannel(channel)
+        self.configure_outputchannel(channel)
         self.p = GPIO.PWM(channel, freq)
     def set_pwm(self, duty=0.0):
         self.p.start(duty)
@@ -47,5 +47,5 @@ class BSW:
     def change_pwm_duty(self, duty):
         p.ChangeDutyCycle(duty)  # where 0.0 <= dc <= 100.0
     def __del__(self):
-        reset_channel(self.output_channels)
+        self.reset_channel(self.output_channels)
         GPIO.cleanup()
