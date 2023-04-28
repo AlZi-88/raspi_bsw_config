@@ -14,8 +14,9 @@ class BSW:
     def __init__(self, input_channels=[], output_channels=[7, 11,13,15], pwm_channel=12):
         GPIO.setmode(GPIO.BOARD)
         #configure_inputchannel(input_channels)
-        configure_outputchannel(output_channels)
-        configure_pwm(pwm_channel)
+        self.configure_outputchannel(output_channels)
+        self.configure_pwm(pwm_channel)
+        self.set_pwm()
         #self.input_channels = input_channels
         self.output_channels = output_channels
         self.pwm_channel = pwm_channel
@@ -24,27 +25,27 @@ class BSW:
         GPIO.setup(channel, GPIO.IN)
     def configure_outputchannel(self, channel):
         GPIO.setup(channel, GPIO.OUT)
-    def set_channel(channel):
+    def set_channel(self, channel):
         if channel in self.output_channels:
             print("Activation of Channel {}".format(channel))
             GPIO.output(channel, 1)
         else:
             print("Channel {} not configured as output channel".format(channel))
-    def reset_channel(channel):
+    def reset_channel(self, channel):
         if channel in self.output_channels:
             print("Activation of Channel {}".format(channel))
             GPIO.output(channel, 0)
         else:
             print("Channel {} not configured as output channel".format(channel))
-    def configure_pwm(self, channel, freq):
+    def configure_pwm(self, channel, freq=25000):
         configure_outputchannel(channel)
         self.p = GPIO.PWM(channel, freq)
-    def set_pwm(self, duty):
+    def set_pwm(self, duty=0.0):
         self.p.start(duty)
     def change_pwm_freq(self, freq):
         self.p.ChangeFrequency(freq)   # where freq is the new frequency in Hz
     def change_pwm_duty(self, duty):
-        p.ChangeDutyCycle(dc)  # where 0.0 <= dc <= 100.0
+        p.ChangeDutyCycle(duty)  # where 0.0 <= dc <= 100.0
     def __del__(self):
         reset_channel(self.output_channels)
         GPIO.cleanup()
