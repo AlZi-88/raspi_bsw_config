@@ -25,9 +25,17 @@ class BSW:
     def configure_outputchannel(self, channel):
         GPIO.setup(channel, GPIO.OUT)
     def set_channel(channel):
-        GPIO.output(channel, 1)
+        if channel in self.output_channels:
+            print("Activation of Channel {}".format(channel))
+            GPIO.output(channel, 1)
+        else:
+            print("Channel {} not configured as output channel".format(channel))
     def reset_channel(channel):
-        GPIO.output(channel, 0)
+        if channel in self.output_channels:
+            print("Activation of Channel {}".format(channel))
+            GPIO.output(channel, 0)
+        else:
+            print("Channel {} not configured as output channel".format(channel))
     def configure_pwm(self, channel, freq):
         configure_outputchannel(channel)
         self.p = GPIO.PWM(channel, freq)
