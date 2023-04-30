@@ -19,6 +19,7 @@ class BSW:
         self.set_pwm()
         #self.input_channels = input_channels
         self.output_channels = output_channels
+        self.reset_channel(output_channels)
         self.pwm_channel = pwm_channel
 
     def configure_inputchannel(self, channel):
@@ -26,26 +27,36 @@ class BSW:
     def configure_outputchannel(self, channel):
         GPIO.setup(channel, GPIO.OUT)
     def set_channel(self, channel):
-        if channel in self.output_channels:
-            print("Activation of Channel {}".format(channel))
-            GPIO.output(channel, 1)
+        if isinstance(channel, list):
+            inter = set(channel).intersection(self.output_channels)        
         else:
-            print("Channel {} not configured as output channel".format(channel))
-    def reset_channel(self, channel):
-        if channel in self.output_channels:
+            inter = channel in self.output_channels
+        if bool(inter):
             print("Activation of Channel {}".format(channel))
             GPIO.output(channel, 0)
         else:
             print("Channel {} not configured as output channel".format(channel))
-    def configure_pwm(self, channel, freq=25000):
+    def reset_channel(self, channel):
+        if isinstance(channel, list):
+            inter = set(channel).intersection(self.output_channels)        
+        else:
+            inter = channel in self.output_channels
+        if bool(inter):
+            print("Deactivation of Channel {}".format(channel))
+            GPIO.output(channel, 1)
+        else:
+            print("Channel {} not configured as output channel".format(channel))
+    def configure_pwm(self, channel, freq=1):
         self.configure_outputchannel(channel)
         self.p = GPIO.PWM(channel, freq)
     def set_pwm(self, duty=0.0):
+        print("Activating PWM, with Duty {}".format(duty))
         self.p.start(duty)
     def change_pwm_freq(self, freq):
         self.p.ChangeFrequency(freq)   # where freq is the new frequency in Hz
     def change_pwm_duty(self, duty):
-        p.ChangeDutyCycle(duty)  # where 0.0 <= dc <= 100.0
+        print("Updating PWM, with Duty {}".format(duty))
+        self.p.ChangeDutyCycle(duty)  # where 0.0 <= dc <= 100.0
     def __del__(self):
         self.reset_channel(self.output_channels)
         GPIO.cleanup()
